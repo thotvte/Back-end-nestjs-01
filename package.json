@@ -20,7 +20,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "fix-line-endings": "Get-ChildItem -Recurse -Include *.ts | ForEach-Object { (Get-Content $_) | Set-Content -NoNewline -Encoding Ascii $_ }",
+    "generate-resource": "nest g resource likes --no-spec && npm run fix-line-endings"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.4",
