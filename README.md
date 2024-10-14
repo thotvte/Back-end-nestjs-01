@@ -1,4 +1,4 @@
-# React
+# Nest.JS
 
 Template này được sữ dụng fullstack Next.js/Nest.js
 
