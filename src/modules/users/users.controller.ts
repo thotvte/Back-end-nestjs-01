@@ -13,6 +13,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { query } from "express";
 import { Sign } from "crypto";
+import { Public } from "@/decorator/customize";
 
 @Controller("users")
 export class UsersController {
@@ -24,6 +25,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Public()
   @Get()
   async findAll(
     @Query() query: string,
