@@ -16,6 +16,7 @@ import { JwtAuthGuard } from "./passport/jwt-auth.guard";
 import { Public } from "@/decorator/customize";
 import { CreateAuthDto } from "./dto/create-auth.dto";
 import { MailerService } from "@nestjs-modules/mailer";
+import { join } from "path";
 
 @Controller("auth")
 export class AuthController {
@@ -46,8 +47,14 @@ export class AuthController {
       // from: "noreply@nestjs.com", // sender address
       subject: "Testing Nest MailerModule ✔", // Subject line
       text: "welcome", // plaintext body
-      html: "<b>Hello word Tho dep trai</b>", // HTML body content
+      // html: "<b>Hello word Tho dep trai 1</b>", // HTML body content
+      template: "register",
+      context: {
+        name: "THO",
+        activationCode: 123456789,
+      },
     });
+
     return "oke";
   }
 }
