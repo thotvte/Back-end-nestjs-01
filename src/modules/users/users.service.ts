@@ -12,7 +12,11 @@ import { hashPasswordHelper } from "@/helpers/util";
 import aqp from "api-query-params";
 import mongoose from "mongoose";
 import { promises } from "dns";
-import { CodeAuthDto, CreateAuthDto } from "@/auth/dto/create-auth.dto";
+import {
+  ChangePasswordAuthDto,
+  CodeAuthDto,
+  CreateAuthDto,
+} from "@/auth/dto/create-auth.dto";
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
 import { MailerService } from "@nestjs-modules/mailer";
@@ -73,7 +77,15 @@ export class UsersService {
       .select("-password")
       .sort(sort as any);
 
-    return { results, totalPages };
+    return {
+      meta: {
+        current: current, // trang hiện tại
+        pageSize: pageSize, //số lượng bản ghi đã lấy
+        pages: totalPages, // tống số trang hiện tại với điều kiện query
+        total: totalItems, // tổng số phần tử (số bản ghi)
+      },
+      results,
+    };
   }
 
   async findOne(id: string): Promise<User> {
@@ -195,5 +207,56 @@ export class UsersService {
     });
 
     return { _id: user._id };
+  }
+
+  async retryPassword(email: string) {
+    const user = await this.userModel.findOne({ email: email });
+    if (!user) {
+      throw new BadRequestException("Tài khoản không tồn tại !!!");
+    }
+    // send emal
+    const codeId = uuidv4();
+
+    //update user
+    await user.updateOne({
+      codeId: codeId,
+      codeExpired: dayjs().add(5, "minutes"),
+    });
+
+    //send email
+    this.mailerService.sendMail({
+      to: user.email, // list of receivers
+      subject: "Change your password account at @THODEPTRAI ✔", // Subject line
+      template: "register",
+      context: {
+        name: user.name ?? user.email,
+        activationCode: codeId,
+      },
+    });
+
+    return { _id: user._id, email: user.email };
+  }
+
+  async changePassword(data: ChangePasswordAuthDto) {
+    if (data.password !== data.confirmPassword) {
+      throw new BadRequestException(
+        "Mật khẩu và xác thực mật khẩu không trùng nhau!!",
+      );
+    }
+
+    const user = await this.userModel.findOne({ email: data.email });
+    if (!user) {
+      throw new BadRequestException("Tài khoản không tồn tại !!!");
+    }
+    //check expire
+    const isBeforeCheck = dayjs().isBefore(user.codeExpired);
+    if (isBeforeCheck) {
+      // valid => update password
+      const newPassword = await hashPasswordHelper(data.password);
+      await user.updateOne({ password: newPassword });
+      return { isBeforeCheck };
+    } else {
+      throw new BadRequestException("Mã code đã hết hạn !");
+    }
   }
 }
