@@ -5,13 +5,8 @@ import { UsersModule } from "@/modules/users/users.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ReviewsModule } from "@/modules/reviews/reviews.module";
-import { RestaurantsModule } from "@/modules/restaurants/restaurants.module";
 import { OrdersModule } from "@/modules/orders/orders.module";
-import { OrderDetailModule } from "@/modules/order.detail/order.detail.module";
-import { MenusModule } from "@/modules/menus/menus.module";
-import { MenuItemsModule } from "@/modules/menu.items/menu.items.module";
-import { MenuItemOptionsModule } from "@/modules/menu.item.options/menu.item.options.module";
-import { LikesModule } from "@/modules/likes/likes.module";
+
 import { AuthModule } from "@/auth/auth.module";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { JwtAuthGuard } from "./auth/passport/jwt-auth.guard";
@@ -19,19 +14,25 @@ import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
 import { join } from "path";
 import { TransformInterceptor } from "./core/transform.interceptor";
+import { RolesModule } from "./modules/roles/roles.module";
+import { CartsModule } from "./modules/carts/carts.module";
+import { CategoryModule } from "./modules/category/category.module";
+import { OrderItemModule } from "./modules/order-item/order-item.module";
+import { PaymentModule } from "./modules/payment/payment.module";
+import { ProductsModule } from "./modules/products/product.module";
 
 @Module({
   imports: [
     UsersModule,
     ReviewsModule,
-    RestaurantsModule,
     OrdersModule,
-    OrderDetailModule,
-    MenusModule,
-    MenuItemsModule,
-    MenuItemOptionsModule,
-    LikesModule,
     AuthModule,
+    RolesModule,
+    CartsModule,
+    CategoryModule,
+    OrderItemModule,
+    PaymentModule,
+    ProductsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

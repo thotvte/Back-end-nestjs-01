@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -23,8 +23,8 @@ export class User {
   @Prop()
   image: string;
 
-  @Prop({ default: "USER" })
-  role: string;
+  @Prop({ type: String, enum: ['USER', 'ADMIN'], default: 'USER'})
+  role: string
 
   @Prop({ default: "LOCAL" })
   accountType: string;

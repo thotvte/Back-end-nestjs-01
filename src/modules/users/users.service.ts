@@ -103,13 +103,15 @@ export class UsersService {
     return await this.userModel.findOne({ email });
   }
 
-  async update(updateUserDto: UpdateUserDto) {
-    return await this.userModel.updateOne(
-      { _id: updateUserDto._id },
-      { ...updateUserDto },
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    // Tìm và cập nhật người dùng theo _id
+    return await this.userModel.findOneAndUpdate(
+      { _id: id }, // Tìm theo id
+      { ...updateUserDto }, // Cập nhật các trường từ updateUserDto
+      { new: true } // Trả về bản ghi đã được cập nhật
     );
   }
-
+  
   async remove(_id: string) {
     if (mongoose.isValidObjectId(_id)) {
       return await this.userModel.deleteOne({ _id });
@@ -135,8 +137,8 @@ export class UsersService {
       password: hashPassword,
       isActive: false,
       codeId: codeId,
-      // codeExpired: dayjs().add(5, "minutes"),
-      codeExpired: dayjs().add(30, "second"),
+      codeExpired: dayjs().add(5, "minutes"),
+      // codeExpired: dayjs().add(30, "second"),
     });
 
     //send email
