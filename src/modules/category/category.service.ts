@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Category } from './schemas/category.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { promises } from 'dns';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+      @InjectModel(Category.name) private categoryModel: Model<Category>,
+    ) {}
+  async create(createCategoryDto: CreateCategoryDto) {
+    const category = await this.categoryModel.create(createCategoryDto);
+    return{
+      _id:category.id,
+      name:category.name
+    }
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async findAll() {
+    const results = await this.categoryModel.find()
+  return {
+    results,
+  };
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} category`;
+    return this.categoryModel.findById(id)
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: string, updateCategoryDto: UpdateCategoryDto):Promise<Category> {
+    const category = await this.categoryModel.findByIdAndUpdate(id, updateCategoryDto);
+    return category
+    
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: string) {
+   const category =  await this.categoryModel.findByIdAndDelete(id)
+    if(!category){
+      throw new NotFoundException(`Không tìm thấy Category với id: ${id}`);
+    }
+
+    await this.categoryModel.deleteOne({_id:id})
+    return { message: `Category với id ${id} đã bị xóa` };
   }
 }

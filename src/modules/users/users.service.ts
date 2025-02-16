@@ -138,6 +138,7 @@ export class UsersService {
       isActive: false,
       codeId: codeId,
       codeExpired: dayjs().add(5, "minutes"),
+      
       // codeExpired: dayjs().add(30, "second"),
     });
 
@@ -261,4 +262,16 @@ export class UsersService {
       throw new BadRequestException("Mã code đã hết hạn !");
     }
   }
+
+  async isMe(id: string): Promise<User> {
+    if (!mongoose.isValidObjectId(id)) {
+      throw new BadRequestException("Id không đúng định dạng MongoDB");
+    }
+    const user = await this.userModel.findOne({ _id: id });
+    if (!user) {
+      throw new NotFoundException(`Không tìm thấy người dùng với id: ${id}`);
+    }
+    return user;
+  }
+
 }

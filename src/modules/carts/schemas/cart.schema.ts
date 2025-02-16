@@ -12,6 +12,9 @@ export class Cart {
   products: mongoose.Types.ObjectId[];
 
   @Prop()
+  quantity: number;
+
+  @Prop()
   totalAmount: number;
 
   @Prop({ default: false })

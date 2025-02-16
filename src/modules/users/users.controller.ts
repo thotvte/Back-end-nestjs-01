@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   Put,
+  Res,
+  Req,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -34,6 +36,12 @@ export class UsersController {
     @Query("pageSize") pageSize: string,
   ) {
     return this.usersService.findAll(query, +current, +pageSize);
+  }
+
+  @Get("profile/me")
+  async me(@Req()req) {
+    const userId = req.user._Id; // Giả sử _id được lưu trong token của người dùng
+    return this.usersService.isMe(userId);  // Gọi service để lấy thông tin người dùng
   }
 
   @Get(":id")

@@ -1,45 +1,101 @@
-import { IsBoolean, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, Min, Max } from "class-validator";
-import { Category } from "@/modules/category/schemas/category.schema";
+import { IsBoolean, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, IsArray, IsUrl } from 'class-validator';
+import { Transform } from 'class-transformer';  // Use Transform for automatic type conversion
+import { Category } from '@/modules/category/schemas/category.schema';
+import { Company } from '@/modules/company/schemas/company.schema';
 
 export class CreateProductDto {
+ 
   @IsOptional()
-  // @IsNotEmpty({ message: "Tên sản phẩm không được để trống" })
+  @IsNotEmpty({ message: 'Tên sản phẩm không được để trống' })
   @IsString()
   name: string;
 
   @IsOptional()
-  // @IsNotEmpty({ message: "Mô tả sản phẩm không được để trống" })
+  @IsNotEmpty({ message: 'Mô tả sản phẩm không được để trống' })
   @IsString()
   description: string;
 
   @IsOptional()
-  // @IsNotEmpty({ message: "Giá sản phẩm không được để trống" })
+  @IsNotEmpty({ message: 'Giá sản phẩm không được để trống' })
   @IsNumber()
+  @Transform(({ value }) => (typeof value === 'string' ? parseFloat(value) : value)) // Transform string to number
   price: number;
 
   @IsOptional()
-  // @IsNotEmpty({ message: "Số lượng tồn kho không được để trống" })
+  @IsNotEmpty({ message: 'Số lượng tồn kho không được để trống' })
   @IsNumber()
+  @Transform(({ value }) => (typeof value === 'string' ? parseInt(value, 10) : value)) // Transform string to number
   stockQuantity: number;
 
-  // @IsOptional()
-  // // @IsNotEmpty({ message: "Hình ảnh sản phẩm không được để trống" })
-  // @IsString()
-  // @IsUrl({}, { message: "URL hình ảnh không hợp lệ" })  // Kiểm tra xem image có phải là URL hợp lệ không
-  // image: string;
+  image: string[];
+
+  @IsOptional()
+  @IsMongoId({ message: 'Category không hợp lệ' })
+  @IsNotEmpty({ message: 'Danh mục không được để trống' })
+  category: string | Category;
+
+  @IsOptional()
+  @IsMongoId({ message: 'Company không hợp lệ' })
+  @IsNotEmpty({ message: 'Company không được để trống' })
+  company: string | Company;
+
+  @IsOptional()
+  color: string;
+
+  @IsOptional()
+  ram: string;
+
+  @IsOptional()
+  storageCapacity: string;
+
+  @IsOptional()
+  cpu: string;
 
   @IsOptional()
   @IsNumber()
-  @Min(1, { message: "Đánh giá phải lớn hơn hoặc bằng 1" })  // Kiểm tra giá trị min cho rating
-  @Max(5, { message: "Đánh giá phải nhỏ hơn hoặc bằng 5" })  // Kiểm tra giá trị max cho rating
-  rating?: number;  // Là optional
+  @Transform(({ value }) => (typeof value === 'string' ? parseInt(value, 10) : value))
+  discount: number;
 
-  // @IsOptional()
-  // @IsMongoId({ message: "Category không hợp lệ" })
-  // // @IsNotEmpty({ message: "Danh mục không được để trống" })
-  // category: string | Category;  // Category có thể là ObjectId hoặc Category object
+  @IsOptional()
+  gpu: string;
+
+  @IsOptional()
+  operatingSystem: string;
+
+  @IsOptional()
+  cpuSpeed :string;
+  
+  @IsOptional()
+  cameraResolution:string
+
+  @IsOptional()
+  screenTechnology:string // công nghệ màn hình
+
+  @IsOptional()
+  screenResolution:string // độ phân giải màn hình 
+
+  @IsOptional()
+  widescreen:string // màn hình rộng
+
+  @IsOptional()
+  batteryCapacity: string // dung lương pin
+
+  @IsOptional()
+  maximumChargingSupport: string // hỗ trợ sạc tối đa 
+
+  @IsOptional()
+  design: string // thiết kế 
+
+  @IsOptional()
+  theLaunchTime: string; // thời gian ra mắt
+
+  @IsOptional()
+  material : string // chất liệu 
+
+  @IsOptional()
+  sizeAndVolume: string // kích thước và trọng lượng
 
   @IsOptional()
   @IsBoolean()
-  isActive: boolean;  // Trạng thái sản phẩm (có bán hay không)
+  isActive: boolean;
 }

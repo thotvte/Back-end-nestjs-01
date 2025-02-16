@@ -20,6 +20,10 @@ import { CategoryModule } from "./modules/category/category.module";
 import { OrderItemModule } from "./modules/order-item/order-item.module";
 import { PaymentModule } from "./modules/payment/payment.module";
 import { ProductsModule } from "./modules/products/product.module";
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { FileUploadModule } from "./modules/file-upload/file-upload.module";
+import { CompanyModule } from "./modules/company/company.module";
 
 @Module({
   imports: [
@@ -33,7 +37,19 @@ import { ProductsModule } from "./modules/products/product.module";
     OrderItemModule,
     PaymentModule,
     ProductsModule,
+    FileUploadModule,
+    CompanyModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    MulterModule.register({
+      storage: diskStorage({
+        destination: '../uploads',
+        filename: (req, file, cb) => {
+          const filename = `${Date.now()}-${file.originalname}`;
+          cb(null, filename);
+        },
+      }),
+    }),
+    
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

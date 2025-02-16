@@ -8,14 +8,8 @@ export class Category {
   @Prop()
   name: string;
 
-  @Prop()
-  description: string;
-
-  @Prop()
-  image: string;  // Hình ảnh của danh mục
-
   @Prop({ default: true })
-  isActive: boolean;  // Trạng thái danh mục
+  isActive: boolean;  
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
