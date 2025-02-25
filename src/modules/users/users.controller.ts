@@ -40,6 +40,7 @@ export class UsersController {
 
   @Get("profile/me")
   async me(@Req()req) {
+    console.log(req.user)
     const userId = req.user._Id; // Giả sử _id được lưu trong token của người dùng
     return this.usersService.isMe(userId);  // Gọi service để lấy thông tin người dùng
   }

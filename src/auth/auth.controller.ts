@@ -34,6 +34,7 @@ export class AuthController {
   @Post("login")
   @ResponseMessage("Fetch login")
   handleLogin(@Request() req) {
+    // console.log('req.user:', req.user);
     return this.authService.login(req.user);
   }
 
