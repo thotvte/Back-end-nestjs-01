@@ -147,8 +147,39 @@ export class CartsService {
   }
   
   
+  async remove(id:string,userId:string){
+    const productId = new Types.ObjectId(id);
+    const userCart = new Types.ObjectId(userId)
+    const updatedCart = await this.cartModel.updateOne(
+      { 'products.productId': productId },  // Điều kiện tìm giỏ hàng có sản phẩm cần xóa
+      { $pull: { products: { productId: productId } } }  // Sử dụng $pull để xóa sản phẩm khỏi mảng products
+    );
 
-  remove(id: number) {
-    return `This action removes a #${id} cart`;
+    const user = await this.cartModel.findOne({user:userCart});
+    if(!updatedCart){
+      console.log('khoong tim thay')
+    }
+    if(user){
+      console.log('khong tim thay user')
+    }
+    
+
+    // Tính lại tổng giá sau khi xóa các sản phẩm
+    let newTotalAmount = 0;
+    for (const remainingProduct of user.products) {
+      // Giả sử mỗi sản phẩm trong giỏ hàng có price và quantity
+      const productId = new Types.ObjectId(remainingProduct.productId); // Chuyển đổi productId thành ObjectId
+  
+      // Tìm thông tin sản phẩm từ cơ sở dữ liệu
+      const productInfo = await this.productModel.findById(productId);
+      newTotalAmount += productInfo.price * remainingProduct.quantity;
+    }
+
+    user.totalAmount = newTotalAmount;
+
+    await user.save();
+    
+    return updatedCart
   }
+ 
 }

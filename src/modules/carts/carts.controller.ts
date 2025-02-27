@@ -32,8 +32,11 @@ export class CartsController {
     return this.cartsService.update(id, updateCartDto);
   }
 
+
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartsService.remove(+id);
+  remove(@Req() req,@Param('id')id: string) {
+    const userId = req.user._Id
+   return this.cartsService.remove(id,userId);
+    
   }
 }
