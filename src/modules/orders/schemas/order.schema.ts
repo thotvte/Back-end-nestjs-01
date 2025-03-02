@@ -9,23 +9,22 @@ export class Order {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: mongoose.Types.ObjectId;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Payment' })
-  payment: mongoose.Types.ObjectId;
+   @Prop( [{
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+      quantity: { type: Number, default: 1 },
+      price: { type: Number, default: 0 }
+   }])
+   products: { productId: mongoose.Types.ObjectId, quantity: number ,price: number;}[];
 
   @Prop()
   totalAmount: number;
 
-  @Prop({ enum: ['PENDING', 'COMPLETED', 'CANCELLED'], default: 'PENDING' })
-  status: string;  // Trạng thái đơn hàng
+  @Prop({ enum: ['CHỜ XÁC NHẬN', 'ĐÃ XÁC NHẬN','ĐANG VẬN CHUYỂN', 'HOÀN THÀNH', 'BỊ HỦY BỎ'], default: 'CHỜ XÁC NHẬN' })
+  status: string;  
 
   @Prop()
   shippingAddress: string;
 
-  @Prop()
-  shippingMethod: string;
-
-  @Prop()
-  deliveryDate: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

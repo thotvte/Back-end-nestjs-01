@@ -104,11 +104,11 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    // Tìm và cập nhật người dùng theo _id
+    
     return await this.userModel.findOneAndUpdate(
-      { _id: id }, // Tìm theo id
-      { ...updateUserDto }, // Cập nhật các trường từ updateUserDto
-      { new: true } // Trả về bản ghi đã được cập nhật
+      { _id: id }, 
+      { ...updateUserDto }, 
+      { new: true } 
     );
   }
   

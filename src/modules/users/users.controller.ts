@@ -50,9 +50,11 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Put(":id")
-  update(@Param('id') id: string,@Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id,updateUserDto);
+  @Put("")
+  update(@Req() req,@Body() updateUserDto: UpdateUserDto) {
+    const userId = req.user._Id
+    // console.log(userId)
+    return this.usersService.update(userId,updateUserDto);
   }
 
   @Delete(":id")
